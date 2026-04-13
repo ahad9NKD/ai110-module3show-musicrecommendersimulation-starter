@@ -45,6 +45,32 @@ For the default profile (`pop`, `happy`, `target_energy=0.8`), the top result is
 
 ![Recommendation terminal output](assets/recommendations-terminal.png)
 
+### Adversarial Profile Tests
+
+To stress-test the scoring logic, I ran these edge-case profiles:
+
+1. `Conflict: Pop + Sad + Very High Energy + Acoustic`
+2. `Conflict: Classical + Intense + Very Low Energy + Non-Acoustic`
+3. `Cold-Start-Like: Unseen Genre + Focused + Max Energy`
+
+Each profile was run with:
+
+```bash
+python -m src.main
+```
+
+Profile 1 terminal output:
+
+![Adversarial profile 1 output](assets/adversarial-1-conflict-pop-sad-very-high-energy-acoustic.png)
+
+Profile 2 terminal output:
+
+![Adversarial profile 2 output](assets/adversarial-2-conflict-classical-intense-very-low-energy-non-acoustic.png)
+
+Profile 3 terminal output:
+
+![Adversarial profile 3 output](assets/adversarial-3-cold-start-like-unseen-genre-focused-max-energy.png)
+
 ---
 
 ## Getting Started
