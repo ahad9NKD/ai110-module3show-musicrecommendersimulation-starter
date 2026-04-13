@@ -17,17 +17,33 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+This simulator uses a transparent, content-based recommendation flow: the system loads songs from `data/songs.csv`, compares each song to a user taste profile, computes a score, and returns the top ranked songs. The `Song` features used are `genre`, `mood`, `energy`, `tempo_bpm`, `valence`, `danceability`, and `acousticness`. The `UserProfile` stores matching preferences such as `favorite_genre`, `favorite_mood`, `target_energy`, and `likes_acoustic` (optionally target tempo/valence/danceability). For each song, the recommender gives weighted points for categorical matches (genre and mood) and adds similarity points for numeric closeness (especially energy), then sorts all songs by total score and returns the top `k` recommendations.
 
-Some prompts to answer:
+### Algorithm Recipe (Final)
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+1. `+2.0` points if `song.genre == user.favorite_genre`
+2. `+1.0` point if `song.mood == user.favorite_mood`
+3. Energy similarity points: `+ 2.0 * max(0, 1 - abs(song.energy - user.target_energy))`
+4. Optional acoustic preference bonus:
+   - `+1.0` if `user.likes_acoustic` and `song.acousticness >= 0.6`
+   - `+1.0` if `not user.likes_acoustic` and `song.acousticness <= 0.4`
+5. Rank all songs by score (highest first) and return top `k`
 
-You can include a simple diagram or bullet list if helpful.
+### Potential Biases
+
+This system may over-prioritize genre labels and miss strong cross-genre matches that fit a listener's mood or context. It can also favor songs whose metadata is cleaner or more complete, and the small catalog limits diversity in the final recommendations.
+
+### Example Terminal Output
+
+The script was run with:
+
+```bash
+python -m src.main
+```
+
+For the default profile (`pop`, `happy`, `target_energy=0.8`), the top result is `Sunrise City`, which matches expectations because it aligns with both categorical preferences and energy target.
+
+![Recommendation terminal output](assets/recommendations-terminal.png)
 
 ---
 
@@ -208,4 +224,3 @@ A few sentences about what you learned:
 - What surprised you about how your system behaved
 - How did building this change how you think about real music recommenders
 - Where do you think human judgment still matters, even if the model seems "smart"
-
